@@ -13,7 +13,13 @@ import { Pool } from "pg";
  * satrdan olib tashlab, to'g'ridan-to'g'ri (to'liq tekshiruv bilan) beramiz.
  */
 function pgPool() {
-  const url = new URL(process.env.DATABASE_URL ?? "");
+  const raw = process.env.DATABASE_URL;
+  // `next build` sahifalarni yig'ayotganda bu modul ham yuklanadi, o'sha paytda
+  // ulanish satri bo'lmasligi mumkin. `Pool` birinchi so'rovgacha ulanmaydi,
+  // shuning uchun bu yerda xato tashlamaymiz — build yiqilmasin.
+  if (!raw) return new Pool();
+
+  const url = new URL(raw);
   url.searchParams.delete("sslmode");
   url.searchParams.delete("channel_binding");
   return new Pool({ connectionString: url.toString(), ssl: { rejectUnauthorized: true } });
