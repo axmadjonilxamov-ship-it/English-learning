@@ -43,6 +43,95 @@
   --color-line: #262a44;
 }
 
+/* ---------- Shaharcha ranglari ----------
+   Shaharcha SVG si bitta marta chiziladi, ranglari esa shu yerdan keladi.
+   Yorug' mavzuda kunduzgi shahar, qorong'i mavzuda kechqurungi shahar —
+   quyosh/oy tugmasi bosilganda `html.dark` klassi almashadi va butun
+   shaharcha bir zumda qayta bo'yaladi (JavaScript ishtirokisiz). */
+
+:root {
+  /* Kunduzi */
+  --city-bg: #dbe2da;
+  --city-block: #ccd4cb;
+  --city-shadow: rgba(15, 23, 20, 0.16);
+  --city-b0: #eaeee7;
+  --city-b1: #e0e6de;
+  --city-b2: #f2f4ef;
+  --city-b3: #d7ded5;
+  --city-b4: #e5eae2;
+  --city-bld-edge: rgba(15, 23, 20, 0.08);
+  --city-win: #aebaad;
+  --city-park: #c4ccd6;
+  --city-park-edge: #a7b0bd;
+  --city-park-line: rgba(15, 23, 20, 0.3);
+  --city-road-dash: #98a29b;
+  --city-zebra: #ffffff;
+  --city-zebra-opacity: 0.8;
+  --city-grass-a: #7cc38d;
+  --city-grass-b: #8ccd9a;
+  --city-grass-edge: #4da766;
+  --city-tree: #2f9152;
+  --city-tree-lit: #47b26c;
+  --city-water-a: #58d4e4;
+  --city-water-b: #29a3bd;
+  --city-pond-edge: #5eb279;
+  --city-path: #c1ccbe;
+  --city-district: #c8d3c7;
+  --city-district-edge: #a7b7a8;
+  --city-plaza: #2f7d46;
+  --city-plaza-hover: #379452;
+  --city-plaza-edge: #24683a;
+  --city-plaza-inner: #4f9c64;
+  --city-plaza-sub: #d3f0dc;
+  --city-metro: #7d867f;
+  --city-train: #9aa49e;
+  --city-train-2: #e2e8e4;
+  /* Chiroq va faralar kunduzi yonmaydi */
+  --city-glow: 0;
+  --city-beam: 0;
+}
+
+.dark {
+  /* Kechqurun */
+  --city-bg: #181d1b;
+  --city-block: #212824;
+  --city-shadow: rgba(0, 0, 0, 0.35);
+  --city-b0: #353e39;
+  --city-b1: #313a35;
+  --city-b2: #3a443e;
+  --city-b3: #2e3632;
+  --city-b4: #38413c;
+  --city-bld-edge: rgba(255, 255, 255, 0.05);
+  --city-win: #4a544e;
+  --city-park: #2a303d;
+  --city-park-edge: #3a4255;
+  --city-park-line: rgba(255, 255, 255, 0.3);
+  --city-road-dash: #5a625c;
+  --city-zebra: #d6dbd6;
+  --city-zebra-opacity: 0.3;
+  --city-grass-a: #1e4a2b;
+  --city-grass-b: #22532f;
+  --city-grass-edge: #2f6b40;
+  --city-tree: #2a7a45;
+  --city-tree-lit: #3a9a5c;
+  --city-water-a: #2bb3c0;
+  --city-water-b: #1b7f93;
+  --city-pond-edge: #35684a;
+  --city-path: #2b3a30;
+  --city-district: #1c2621;
+  --city-district-edge: #2c3a31;
+  --city-plaza: #1b3a25;
+  --city-plaza-hover: #21502f;
+  --city-plaza-edge: #3f8f52;
+  --city-plaza-inner: #2e6b3d;
+  --city-plaza-sub: #9fd0ab;
+  --city-metro: #9aa6a0;
+  --city-train: #8f9b96;
+  --city-train-2: #cfd8d4;
+  --city-glow: 1;
+  --city-beam: 1;
+}
+
 @layer base {
   html {
     color-scheme: light;
@@ -227,4 +316,101 @@
   transform-box: fill-box;
   transform-origin: 50% 100%;
   animation: elc-drop 0.45s 0.45s ease-out backwards;
+}
+
+/* ---------- Shaharcha SVG si uchun sinflar ----------
+   SVG ichidagi elementlar `fill="..."` o'rniga shu sinflarni oladi, shunda
+   rang yuqoridagi o'zgaruvchidan keladi va mavzu bilan birga almashadi. */
+@layer components {
+  .c-bg {
+    fill: var(--city-bg);
+  }
+  .c-block {
+    fill: var(--city-block);
+  }
+  .c-shadow {
+    fill: var(--city-shadow);
+  }
+  .c-b0 {
+    fill: var(--city-b0);
+  }
+  .c-b1 {
+    fill: var(--city-b1);
+  }
+  .c-b2 {
+    fill: var(--city-b2);
+  }
+  .c-b3 {
+    fill: var(--city-b3);
+  }
+  .c-b4 {
+    fill: var(--city-b4);
+  }
+  .c-bld-edge {
+    stroke: var(--city-bld-edge);
+  }
+  .c-win {
+    fill: var(--city-win);
+  }
+  .c-park {
+    fill: var(--city-park);
+    stroke: var(--city-park-edge);
+  }
+  .c-park-line {
+    stroke: var(--city-park-line);
+  }
+  .c-road-dash {
+    stroke: var(--city-road-dash);
+  }
+  .c-zebra {
+    fill: var(--city-zebra);
+    opacity: var(--city-zebra-opacity);
+  }
+  .c-grass-a {
+    fill: var(--city-grass-a);
+  }
+  .c-grass-b {
+    fill: var(--city-grass-b);
+  }
+  .c-grass {
+    stroke: var(--city-grass-edge);
+  }
+  .c-tree {
+    fill: var(--city-tree);
+  }
+  .c-tree-lit {
+    fill: var(--city-tree-lit);
+  }
+  .c-water-a {
+    stop-color: var(--city-water-a);
+  }
+  .c-water-b {
+    stop-color: var(--city-water-b);
+  }
+  .c-pond-edge {
+    fill: var(--city-pond-edge);
+  }
+  .c-path {
+    fill: var(--city-path);
+  }
+  .c-district {
+    fill: var(--city-district);
+    stroke: var(--city-district-edge);
+  }
+  .c-metro {
+    stroke: var(--city-metro);
+  }
+  .c-train {
+    fill: var(--city-train);
+  }
+  .c-train-2 {
+    fill: var(--city-train-2);
+  }
+  /* Ko'cha chiroqlari va fara nurlari — kunduzi o'chadi. */
+  .c-lamps {
+    opacity: var(--city-glow);
+  }
+  .c-beam {
+    opacity: var(--city-beam);
+  }
 }

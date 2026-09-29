@@ -52,13 +52,13 @@ const SKILLS: Skill[] = [
   },
   {
     name: "Speaking",
-    href: null,
-    icon: "volume",
+    href: "/ielts/speaking",
+    icon: "mic",
     minutes: { uz: "11–14 daqiqa · 3 qism", ru: "11–14 минут · 3 части", en: "11–14 minutes · 3 parts" },
     desc: {
-      uz: "Tanishuv savollari, kartochka bo'yicha monolog va munozara.",
-      ru: "Вопросы о себе, монолог по карточке и обсуждение.",
-      en: "Personal questions, a cue-card monologue and a discussion.",
+      uz: "Tanishuv savollari, kartochka bo'yicha monolog va munozara. Javobingiz ovozdan matnga aylantirilib baholanadi.",
+      ru: "Вопросы о себе, монолог по карточке и обсуждение. Ваш ответ переводится из речи в текст и оценивается.",
+      en: "Personal questions, a cue-card monologue and a discussion. Your answer is turned into text and marked.",
     },
     gradient: "from-violet-600 to-fuchsia-500",
   },

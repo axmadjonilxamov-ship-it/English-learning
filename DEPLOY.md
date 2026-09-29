@@ -55,6 +55,8 @@ Qiymatlarni kompyuteringizdagi `.env.local` faylidan ko'chiring:
 | `ADMIN_PASSWORD` | Admin panel paroli |
 | `BETTER_AUTH_URL` | Sayt manzili, masalan `https://english-learning-center.vercel.app` |
 | `TRUSTED_ORIGINS` | Xuddi shu manzil |
+| `OPENAI_API_KEY` | IELTS Speaking uchun (ovozni matnga aylantirish) |
+| `ANTHROPIC_API_KEY` | IELTS Speaking uchun (javobni baholash) |
 
 `.env.local` ni ko'rish uchun:
 
@@ -97,8 +99,10 @@ Vercel o'zi qayta qurib, yangilaydi. Qo'lda hech narsa qilish kerak emas.
 
 ## Parolni almashtirish
 
-`ADMIN_PASSWORD` hozir `••••••••` — bu klaviatura naqshi, kuchsiz parol.
-Internetga chiqargandan keyin uzunroq parolga almashtirishni maslahat beraman:
+Hozirgi `ADMIN_PASSWORD` — klaviatura naqshidan iborat qisqa parol (uni
+`.env.local` faylidan ko'rishingiz mumkin; bu yerga atayin yozilmadi, chunki
+bu fayl GitHub'ga tushadi). Internetga chiqargandan keyin uzunroq parolga
+almashtirishni maslahat beraman:
 
 1. Vercel → Settings → Environment Variables → `ADMIN_PASSWORD` ni tahrirlang
 2. "Redeploy" bosing
@@ -128,6 +132,11 @@ openssl rand -base64 18
   keyingi so'rovda ~1 soniya kechikish bo'ladi. Foydalanuvchilar ko'paysa
   bu sezilmaydi.
 - **IELTS Writing tahlili** avtomatik va taxminiy — rasmiy baho emas.
+- **IELTS Speaking** ikkita pullik xizmatga tayanadi: OpenAI Whisper (ovoz →
+  matn) va Claude (baholash). Kalitlar qo'yilmasa, sahifa ochiladi va ovoz
+  yoziladi, lekin "Baholash" tugmasi «xizmat sozlanmagan» xabarini beradi.
+  Har bir baholash taxminan bir tiyinlik xarajat — bitta IP dan 10 daqiqada
+  12 tadan ko'p so'rov yuborilmasligi uchun cheklov qo'yilgan.
 - **Tarjimon** MyMemory bepul xizmatidan foydalanadi: kunlik chegarasi bor
   (anonim so'rovlar uchun ~5000 belgi). Ko'p ishlatilsa, o'z API kalitini
   olish yoki boshqa xizmatga o'tish kerak bo'ladi.

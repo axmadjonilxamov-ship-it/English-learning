@@ -15,16 +15,21 @@ import {
 import { analyse, type WritingAnalysis } from "@/lib/writing-analysis";
 import { shuffle } from "@/lib/shuffle";
 import { useLang } from "@/lib/i18n";
+import { useRandomItem } from "@/lib/use-random-item";
 
 type Kind = "task1" | "task2";
 
-const DRAFT_KEY = "englishup:ielts-writing";
+/** Qoralama har bir topshiriq uchun alohida saqlanadi. */
+const DRAFT_PREFIX = "englishup:ielts-writing";
+/** Eskiroq versiyada qoralama shu bitta kalitda turardi — tozalab yuboramiz. */
+const OLD_DRAFT_KEY = DRAFT_PREFIX;
 
 export default function WritingPage() {
   const { t, lang } = useLang();
   const [kind, setKind] = useState<Kind>("task1");
-  const [t1, setT1] = useState<Task1Prompt>(TASK1_PROMPTS[0]);
-  const [t2, setT2] = useState<Task2Prompt>(TASK2_PROMPTS[0]);
+  // Sahifa har ochilganda boshqa topshiriq chiqadi.
+  const [t1, setT1] = useRandomItem<Task1Prompt>(TASK1_PROMPTS, `${DRAFT_PREFIX}-last1`);
+  const [t2, setT2] = useRandomItem<Task2Prompt>(TASK2_PROMPTS, `${DRAFT_PREFIX}-last2`);
   const [text, setText] = useState("");
   const [result, setResult] = useState<WritingAnalysis | null>(null);
   const [seconds, setSeconds] = useState(0);
@@ -33,25 +38,32 @@ export default function WritingPage() {
 
   const minutes = kind === "task1" ? TASK1_MINUTES : TASK2_MINUTES;
   const promptText = kind === "task1" ? t1.prompt : t2.prompt;
+  const draftKey = `${DRAFT_PREFIX}:${kind === "task1" ? t1.id : t2.id}`;
 
-  // Yozilganini saqlab boramiz — sahifa yopilsa ham yo'qolmasin.
+  // Yozilganini saqlab boramiz — sahifa yopilsa ham yo'qolmasin. Har bir
+  // topshiriqning qoralamasi alohida turadi, shuning uchun mavzu almashganda
+  // oldingi essening matni yangi mavzu ustida qolib ketmaydi.
   useEffect(() => {
+    let saved = "";
     try {
-      const saved = localStorage.getItem(DRAFT_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      if (saved) setText(saved);
+      saved = localStorage.getItem(draftKey) ?? "";
+      localStorage.removeItem(OLD_DRAFT_KEY);
     } catch {
       // localStorage yopiq bo'lsa, shunchaki saqlanmaydi.
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setText(saved);
+  }, [draftKey]);
 
-  useEffect(() => {
+  /** Matnni holatga ham, xotiraga ham yozadi. */
+  const write = (value: string) => {
+    setText(value);
     try {
-      localStorage.setItem(DRAFT_KEY, text);
+      localStorage.setItem(draftKey, value);
     } catch {
       // saqlab bo'lmasa ham yozishda davom etish mumkin.
     }
-  }, [text]);
+  };
 
   // Taymer
   useEffect(() => {
@@ -77,7 +89,7 @@ export default function WritingPage() {
   };
 
   const restart = () => {
-    setText("");
+    write("");
     setResult(null);
     setSeconds(0);
     setRunning(false);
@@ -183,7 +195,7 @@ export default function WritingPage() {
             ref={areaRef}
             value={text}
             onChange={(e) => {
-              setText(e.target.value);
+              write(e.target.value);
               if (!running && e.target.value.length === 1) setRunning(true);
             }}
             placeholder={

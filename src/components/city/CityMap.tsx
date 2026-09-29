@@ -18,6 +18,10 @@ function shade(hex: string, amt: number) {
   return `rgb(${mix(n >> 16)},${mix((n >> 8) & 255)},${mix(n & 255)})`;
 }
 
+/** Xarita ustidagi izoh belgilari — yorug' va qorong'i mavzuda ham o'qiladi. */
+const CHIP =
+  "inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/85 px-3 py-1.5 text-xs font-semibold text-ink backdrop-blur dark:border-white/10 dark:bg-black/70 dark:text-gray-200";
+
 /** Bosilgan binoga chiziladigan marshrut. */
 type Route = { x: number; y: number; label: string; href: string };
 
@@ -145,7 +149,7 @@ function District({
 
   return (
     <g>
-      <rect x={x} y={y} width={w} height={h} rx={6} fill="#1c2621" stroke="#2c3a31" />
+      <rect x={x} y={y} width={w} height={h} rx={6} className="c-district" />
 
       {towers.map((t) => {
         const mod = level.modules[t.m];
@@ -173,7 +177,7 @@ function District({
         );
       })}
 
-      <rect x={x + w / 2 - 8} y={y + 184} width={16} height={12} fill="#2a3a30" />
+      <rect x={x + w / 2 - 8} y={y + 184} width={16} height={12} className="c-path" />
 
       <g
         role="button"
@@ -195,12 +199,19 @@ function District({
           width={pw}
           height={ph}
           rx={10}
-          fill="#1b3a25"
-          stroke="#3f8f52"
           strokeWidth={2}
-          className="transition group-hover:fill-[#21502f] group-hover:stroke-[#6ee7a0] group-focus-visible:stroke-[#6ee7a0]"
+          className="fill-[var(--city-plaza)] stroke-[var(--city-plaza-edge)] transition group-hover:fill-[var(--city-plaza-hover)] group-hover:stroke-[#6ee7a0] group-focus-visible:stroke-[#6ee7a0]"
         />
-        <rect x={px + 5} y={py + 5} width={pw - 10} height={ph - 10} rx={7} fill="none" stroke="#2e6b3d" opacity={0.6} />
+        <rect
+          x={px + 5}
+          y={py + 5}
+          width={pw - 10}
+          height={ph - 10}
+          rx={7}
+          fill="none"
+          className="stroke-[var(--city-plaza-inner)]"
+          opacity={0.6}
+        />
         {[
           [px + 12, py + 12, level.palette[0]],
           [px + pw - 34, py + 12, level.palette[1]],
@@ -212,8 +223,15 @@ function District({
         <text x={x + w / 2} y={py + 50} fontSize={plazaFont} fontWeight={800} fill="#fff" textAnchor="middle">
           {level.name}
         </text>
-        <line x1={x + w / 2 - 36} y1={py + 60} x2={x + w / 2 + 36} y2={py + 60} stroke="#3f8f52" strokeWidth={2} />
-        <text x={x + w / 2} y={py + 76} fontSize={10} fontWeight={700} fill="#9fd0ab" textAnchor="middle">
+        <line
+          x1={x + w / 2 - 36}
+          y1={py + 60}
+          x2={x + w / 2 + 36}
+          y2={py + 60}
+          className="stroke-[var(--city-plaza-edge)]"
+          strokeWidth={2}
+        />
+        <text x={x + w / 2} y={py + 76} fontSize={10} fontWeight={700} className="fill-[var(--city-plaza-sub)]" textAnchor="middle">
           {level.cefr} · {progress.done}/{progress.total} {t("common.lessons")}
         </text>
       </g>
@@ -263,7 +281,7 @@ export function CityMap() {
     <div className="relative">
       <div
         ref={scrollRef}
-        className="scroll-thin overflow-x-auto overflow-y-hidden rounded-[1.6rem] border border-white/5 bg-[#181d1b] shadow-[0_40px_80px_-30px_rgba(0,0,0,.6)]"
+        className="scroll-thin overflow-x-auto overflow-y-hidden rounded-[1.6rem] border border-line bg-[var(--city-bg)] shadow-[0_30px_60px_-30px_rgba(15,23,20,.35)] dark:shadow-[0_40px_80px_-30px_rgba(0,0,0,.6)]"
       >
         <svg
           viewBox={`0 0 ${CITY_W} ${CITY_H}`}
@@ -272,7 +290,7 @@ export function CityMap() {
           aria-label={t("city.mapLabel")}
         >
           <defs dangerouslySetInnerHTML={{ __html: CITY_DEFS }} />
-          <rect width={CITY_W} height={CITY_H} fill="#181d1b" />
+          <rect width={CITY_W} height={CITY_H} className="c-bg" />
 
           <g dangerouslySetInnerHTML={{ __html: parts.below }} />
 
@@ -366,13 +384,14 @@ export function CityMap() {
                   </polygon>
                 </g>
               )}
-              <polygon points="17,-7 78,-28 78,28 17,7" fill="url(#beam)" />
+              {/* Fara nuri — kunduzi o'chadi (`c-beam`, globals.css) */}
+              <polygon points="17,-7 78,-28 78,28 17,7" fill="url(#beam)" className="c-beam" />
               <rect x={-18} y={-10} width={36} height={20} rx={7} fill="#dc2626" />
               <rect x={-18} y={-2.5} width={36} height={5} fill="#7f1d1d" opacity={0.6} />
               <rect x={0} y={-8} width={9} height={16} rx={2.5} fill="#1e293b" />
               <rect x={-14} y={-7.5} width={6} height={15} rx={2} fill="#334155" opacity={0.8} />
-              <circle cx={16} cy={-6} r={1.8} fill="#fff7cc" />
-              <circle cx={16} cy={6} r={1.8} fill="#fff7cc" />
+              <circle cx={16} cy={-6} r={1.8} fill="#fff7cc" className="c-beam" />
+              <circle cx={16} cy={6} r={1.8} fill="#fff7cc" className="c-beam" />
               <rect x={-19} y={-8} width={2} height={4} rx={1} fill={drive.stopped ? "#fca5a5" : "#ef4444"} />
               <rect x={-19} y={4} width={2} height={4} rx={1} fill={drive.stopped ? "#fca5a5" : "#ef4444"} />
             </g>
@@ -396,33 +415,35 @@ export function CityMap() {
         <button
           type="button"
           onClick={() => router.push(route.href)}
-          className="absolute left-1/2 top-4 -translate-x-1/2 rounded-full border border-white/15 bg-black/85 px-4 py-2 text-sm font-bold text-white backdrop-blur transition hover:bg-black"
+          className="absolute left-1/2 top-4 -translate-x-1/2 rounded-full border border-black/10 bg-white/90 px-4 py-2 text-sm font-bold text-ink backdrop-blur transition hover:bg-white dark:border-white/15 dark:bg-black/85 dark:text-white dark:hover:bg-black"
         >
           {drive.chasing ? (
-            <span className="text-blue-300">{t("city.chasing")}</span>
+            <span className="text-blue-600 dark:text-blue-300">{t("city.chasing")}</span>
           ) : drive.stopped ? (
-            <span className="text-red-400">{t("city.stopped")}</span>
+            <span className="text-red-600 dark:text-red-400">{t("city.stopped")}</span>
           ) : drive.arrived ? (
-            <span className="text-green-400">{t("city.arrived")}</span>
+            <span className="text-green-600 dark:text-green-400">{t("city.arrived")}</span>
           ) : (
             <>
               {route.label} {t("city.driving")}{" "}
-              <span className="text-amber-400">{drive.turbo ? "⚡ TURBO" : `Shift — ${t("city.turboHint")}`}</span>
+              <span className="text-amber-600 dark:text-amber-400">{drive.turbo ? "⚡ TURBO" : `Shift — ${t("city.turboHint")}`}</span>
             </>
           )}
         </button>
       )}
 
       <div className="pointer-events-none absolute bottom-3.5 left-4 flex flex-wrap gap-2">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/70 px-3 py-1.5 text-xs font-semibold text-gray-200 backdrop-blur">
+        <span className={CHIP}>
           <i className="size-3.5 rounded-full bg-green-500 shadow-[0_0_0_4px_rgba(34,197,94,.25)]" /> {t("city.youAreHere")}
         </span>
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/70 px-3 py-1.5 text-xs font-semibold text-gray-200 backdrop-blur">
+        <span className={CHIP}>
           <i className="size-3.5 rounded-sm bg-red-600" /> {t("city.clickHint")}
         </span>
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/70 px-3 py-1.5 text-xs font-semibold text-gray-200 backdrop-blur">
-          <kbd className="rounded border border-white/20 bg-white/10 px-1.5 py-0.5">Shift</kbd> {t("city.turboHint")} ·
-          <span className="text-amber-400">{t("city.redWarning")}</span>
+        <span className={CHIP}>
+          <kbd className="rounded border border-black/15 bg-black/5 px-1.5 py-0.5 dark:border-white/20 dark:bg-white/10">
+            Shift
+          </kbd>{" "}
+          {t("city.turboHint")} · <span className="text-amber-600 dark:text-amber-400">{t("city.redWarning")}</span>
         </span>
       </div>
     </div>

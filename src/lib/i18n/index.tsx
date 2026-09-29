@@ -3,23 +3,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DEFAULT_LANG, isLang, pick, type Lang, type Text } from "./types";
 import { UI, type UIKey } from "./ui";
+import { LANG_KEY } from "@/lib/boot-script";
 
 export * from "./types";
 export { UI } from "./ui";
 export type { UIKey } from "./ui";
 
-const STORAGE_KEY = "englishup:lang";
-
-/**
- * Sahifa chizilishidan oldin ishlaydi — tanlangan til `<html lang>` ga
- * darhol qo'yiladi, shuning uchun matn bir lahza boshqa tilda "chaqnamaydi".
- */
-export const langScript = `
-(function(){try{
-  var l = localStorage.getItem(${JSON.stringify(STORAGE_KEY)});
-  if (l === "uz" || l === "ru" || l === "en") document.documentElement.lang = l;
-}catch(e){}})();
-`;
 
 type Api = {
   lang: Lang;
@@ -42,7 +31,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let saved: string | null = null;
     try {
-      saved = localStorage.getItem(STORAGE_KEY);
+      saved = localStorage.getItem(LANG_KEY);
     } catch {
       // Maxfiy rejimda o'qib bo'lmaydi — standart til qoladi.
     }
@@ -55,7 +44,7 @@ export function LangProvider({ children }: { children: React.ReactNode }) {
     setLangState(next);
     document.documentElement.lang = next;
     try {
-      localStorage.setItem(STORAGE_KEY, next);
+      localStorage.setItem(LANG_KEY, next);
     } catch {
       // Saqlab bo'lmasa ham, shu sessiyada til ishlaydi.
     }

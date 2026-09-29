@@ -2,20 +2,7 @@
 
 import { Icon } from "./Icon";
 import { useT } from "@/lib/i18n";
-
-const KEY = "englishup:theme";
-
-/**
- * Sahifa chizilishidan oldin ishlaydi — shu tufayli qorong'i rejimda
- * sahifa bir lahza oq bo'lib "chaqnab" ketmaydi.
- */
-export const themeScript = `
-(function(){try{
-  var t = localStorage.getItem(${JSON.stringify(KEY)});
-  var dark = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-  document.documentElement.classList.toggle("dark", dark);
-}catch(e){}})();
-`;
+import { THEME_KEY } from "@/lib/boot-script";
 
 export function ThemeToggle() {
   const t = useT();
@@ -25,7 +12,7 @@ export function ThemeToggle() {
   const toggle = () => {
     const dark = document.documentElement.classList.toggle("dark");
     try {
-      localStorage.setItem(KEY, dark ? "dark" : "light");
+      localStorage.setItem(THEME_KEY, dark ? "dark" : "light");
     } catch {
       // localStorage yopiq bo'lsa ham mavzu shu sessiyada ishlaydi.
     }

@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# Namuna fayl — ichida faqat o'rnini bosuvchi qiymatlar, maxfiy narsa yo'q.
+!.env.example
 
 # vercel
 .vercel

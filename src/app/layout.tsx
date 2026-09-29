@@ -7,8 +7,8 @@ import { ProgressProvider } from "@/lib/progress";
 import { EnforcementProvider } from "@/components/EnforcementProvider";
 import { AuthGate } from "@/components/AuthGate";
 import { InstallPrompt } from "@/components/InstallPrompt";
-import { themeScript } from "@/components/ThemeToggle";
-import { LangProvider, langScript } from "@/lib/i18n";
+import { LangProvider } from "@/lib/i18n";
+import { langScript, themeScript } from "@/lib/boot-script";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
