@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>English Learning Center</title>
+  <meta name="description" content="O'zbek tilida so'zlashuvchilar uchun ingliz tilini o'rganish shaharchasi: lug'at, test, tinglash va grammatika." />
+  <script>
+    try { const t = localStorage.getItem("englishup:theme"); if (t) document.documentElement.dataset.theme = JSON.parse(t); } catch {}
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="icon" href="logo.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-glow" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <!-- SVG ikonkalar -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+    <symbol id="i-cards" viewBox="0 0 24 24"><rect x="3" y="7" width="14" height="14" rx="3"/><path d="M8 3h10a3 3 0 0 1 3 3v10"/></symbol>
+    <symbol id="i-quiz" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.8 2.8L16.5 9"/></symbol>
+    <symbol id="i-listen" viewBox="0 0 24 24"><path d="M3 15v-3a9 9 0 0 1 18 0v3"/><path d="M21 16a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 16a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></symbol>
+    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20"/></symbol>
+    <symbol id="i-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></symbol>
+    <symbol id="i-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 15.4-6.4L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.4 6.4L3 16M3 21v-5h5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 13.5A8.5 8.5 0 1 1 10.5 3.5a6.5 6.5 0 0 0 10 10z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+    <symbol id="i-turtle" viewBox="0 0 24 24"><path d="M4 15a8 8 0 0 1 16 0z"/><path d="M20 15h1.5a1.5 1.5 0 0 0 0-3H19M7 15l-1 3M17 15l1 3"/></symbol>
+    <symbol id="i-flip" viewBox="0 0 24 24"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></symbol>
+    <symbol id="logo-mark" viewBox="0 0 64 64"><path d="M10 6h40a9 9 0 0 1 9 9v25a9 9 0 0 1-9 9H26L16 58V49h-6a9 9 0 0 1-9-9V15a9 9 0 0 1 9-9z" fill="#253a85"/><text x="30" y="37" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="800" font-size="24" fill="#fff">En</text><circle cx="57" cy="7" r="7" fill="#e8a23b"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <a class="brand" data-go="home" href="#home" aria-label="English Learning Center — bosh sahifa">
+      <svg class="logo-mark"><use href="#logo-mark"/></svg>
+      <span class="wordmark"><b>English</b><small>Learning Center</small></span>
+    </a>
+    <nav class="nav" aria-label="Asosiy menyu">
+      <button data-go="home" class="active"><svg class="i"><use href="#i-map"/></svg><span>Shaharcha</span></button>
+      <button data-go="cards"><svg class="i"><use href="#i-cards"/></svg><span>Lug'at</span></button>
+      <button data-go="quiz"><svg class="i"><use href="#i-quiz"/></svg><span>Test</span></button>
+      <button data-go="listen"><svg class="i"><use href="#i-listen"/></svg><span>Tinglash</span></button>
+      <button data-go="grammar"><svg class="i"><use href="#i-book"/></svg><span>Grammatika</span></button>
+    </nav>
+    <div class="top-right">
+      <div class="pill streak" title="Kunlik seriya">🔥 <b id="topStreak">0</b></div>
+      <button id="themeBtn" class="icon-btn" aria-label="Mavzuni almashtirish"><svg class="i"><use href="#i-sun"/></svg></button>
+    </div>
+  </header>
+
+  <main>
+    <!-- ================= HOME: SHAHARCHA ================= -->
+    <section id="home" class="view active">
+      <div class="city-head">
+        <div>
+          <span class="eyebrow">🌃 Ingliz tili shaharchasi</span>
+          <h1>Shaharni kezing, <span class="grad-text">ingliz tilini</span> o'rganing</h1>
+          <p class="lead">Har bir tuman — bitta daraja: Beginner'dan IELTS gacha. Binoga bosing — kurs yo'li ochiladi.</p>
+        </div>
+        <div class="mini-stats">
+          <div class="mini"><b id="statLessons">0</b><span>dars tugatildi</span></div>
+          <div class="mini"><b id="statLearned">0</b><span>so'z o'rganildi</span></div>
+          <div class="mini"><b id="statStreak">0</b><span>kunlik seriya 🔥</span></div>
+        </div>
+      </div>
+
+      <div class="city-wrap" id="cityWrap">
+        <div id="city"></div>
+        <div class="city-tip" id="cityTip"></div>
+        <div class="city-legend">
+          <span><i class="dot you"></i> Siz shu yerdasiz</span>
+          <span><i class="dot metro">M</i> Metro</span>
+          <span class="swipe-hint">← surib ko'ring →</span>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Darajalar</h2>
+        <span class="muted">Beginner → Elementary → Pre-Inter → Intermediate → Upper-Inter → IELTS</span>
+      </div>
+      <div class="districts" id="districtList"></div>
+
+      <div class="section-head" id="statsSection">
+        <h2>Sizning natijangiz</h2>
+      </div>
+      <div class="stats">
+        <div class="stat card">
+          <div class="ring" id="learnRing" style="--p:0"><span id="learnPct">0%</span></div>
+          <div><b id="statLessons2">0</b><span>tugatilgan dars</span></div>
+        </div>
+        <div class="stat card">
+          <div class="stat-icon violet"><svg class="i"><use href="#i-quiz"/></svg></div>
+          <div><b id="statQuiz2">0%</b><span>eng yaxshi test natijasi</span></div>
+        </div>
+        <div class="stat card">
+          <div class="stat-icon blue"><svg class="i"><use href="#i-cards"/></svg></div>
+          <div><b id="statLearned2">0</b><span>o'rganilgan so'z</span></div>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Mavzular</h2>
+        <span class="muted">Har bir mavzu bo'yicha progress</span>
+      </div>
+      <div class="topics" id="topics"></div>
+    </section>
+
+    <!-- ================= FLASHCARDS ================= -->
+    <section id="cards" class="view">
+      <div class="page-head">
+        <div>
+          <h2>Lug'at kartochkalari</h2>
+          <p class="muted">Kartani bosing yoki <kbd>Space</kbd> — aylantirish, <kbd>←</kbd> <kbd>→</kbd> — o'tish</p>
+        </div>
+      </div>
+      <div class="chips" id="cardChips"></div>
+
+      <div class="deck-progress">
+        <div class="bar"><div id="cardBar"></div></div>
+        <span id="cardCounter" class="muted"></span>
+      </div>
+
+      <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Kartani aylantirish">
+        <div class="face front">
+          <span class="tag" id="cardTag"></span>
+          <span class="known-badge"><svg class="i sm"><use href="#i-check"/></svg> O'rganilgan</span>
+          <div class="word" id="cardWord"></div>
+          <div class="transcription" id="cardTranscription"></div>
+          <div class="hint"><svg class="i sm"><use href="#i-flip"/></svg> Tarjimani ko'rish uchun bosing</div>
+        </div>
+        <div class="face back">
+          <div class="word" id="cardTranslation"></div>
+          <div class="example" id="cardExample"></div>
+        </div>
+      </div>
+
+      <div class="card-controls">
+        <button class="round-btn" id="cardPrev" aria-label="Oldingi"><svg class="i"><use href="#i-left"/></svg></button>
+        <button class="round-btn" id="cardSpeak" aria-label="Tinglash"><svg class="i"><use href="#i-volume"/></svg></button>
+        <button class="btn success" id="cardKnow"><svg class="i"><use href="#i-check"/></svg> Bilaman</button>
+        <button class="round-btn" id="cardNext" aria-label="Keyingi"><svg class="i"><use href="#i-right"/></svg></button>
+      </div>
+    </section>
+
+    <!-- ================= QUIZ ================= -->
+    <section id="quiz" class="view">
+      <div class="page-head">
+        <div>
+          <h2>Test</h2>
+          <p class="muted">To'g'ri tarjimani tanlang · <kbd>1</kbd>–<kbd>4</kbd> tugmalari ham ishlaydi</p>
+        </div>
+        <button class="btn ghost" id="quizRestart"><svg class="i"><use href="#i-refresh"/></svg> Qaytadan</button>
+      </div>
+      <div class="chips" id="quizChips"></div>
+
+      <div class="card quiz-card">
+        <div class="quiz-top">
+          <span class="pill" id="quizStep"></span>
+          <div class="bar"><div id="quizBar"></div></div>
+          <span class="pill score" id="quizScore"></span>
+        </div>
+        <div id="quizBody"></div>
+      </div>
+    </section>
+
+    <!-- ================= LISTENING ================= -->
+    <section id="listen" class="view">
+      <div class="page-head">
+        <div>
+          <h2>Tinglash va yozish</h2>
+          <p class="muted">So'zni tinglang va uni inglizcha yozing</p>
+        </div>
+        <span class="pill score" id="listenScore">0 / 0</span>
+      </div>
+      <div class="chips" id="listenChips"></div>
+
+      <div class="card listen-card">
+        <div class="play-wrap">
+          <button class="play-btn" id="listenPlay" aria-label="Tinglash"><svg class="i"><use href="#i-volume"/></svg></button>
+          <button class="slow-btn" id="listenSlow"><svg class="i sm"><use href="#i-turtle"/></svg> Sekinroq</button>
+        </div>
+        <div class="input-wrap">
+          <input id="listenInput" type="text" placeholder="Eshitgan so'zingizni yozing…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+        </div>
+        <div class="hint-line muted" id="listenHint"></div>
+        <div class="card-controls">
+          <button class="btn ghost" id="listenHintBtn">Yordam</button>
+          <button class="btn primary" id="listenCheck">Tekshirish</button>
+          <button class="btn ghost" id="listenSkip">O'tkazish</button>
+        </div>
+        <div class="feedback" id="listenFeedback"></div>
+      </div>
+    </section>
+
+    <!-- ================= GRAMMAR ================= -->
+    <section id="grammar" class="view">
+      <div class="page-head">
+        <div>
+          <h2>Grammatika darslari</h2>
+          <p class="muted">Eng muhim qoidalar — qisqa va tushunarli</p>
+        </div>
+      </div>
+      <div id="grammarList" class="lessons"></div>
+    </section>
+    <!-- ================= KURS YO'LI ================= -->
+    <section id="path" class="view path-view">
+      <div class="path-top">
+        <button class="btn ghost back-btn" data-go="home"><svg class="i sm"><use href="#i-left"/></svg> Shaharcha</button>
+        <div class="path-title">
+          <span class="kicker">KURS YO'LI</span>
+          <div class="path-level"><b id="pathLevel"></b> <span id="pathCount"></span></div>
+          <div class="path-segs" id="pathSegs"></div>
+        </div>
+      </div>
+      <div class="chips level-tabs" id="levelTabs"></div>
+      <div class="path-scroll" id="pathScroll"><div id="pathCanvas"></div></div>
+      <div class="path-panel" id="pathPanel"></div>
+    </section>
+
+    <!-- ================= DARS ================= -->
+    <section id="lesson" class="view lesson-view">
+      <aside class="rail">
+        <button class="rail-back" id="lessonBack" aria-label="Kurs yo'liga qaytish"><svg class="i"><use href="#i-left"/></svg></button>
+        <div class="rail-level" id="railLevel"></div>
+        <div class="rail-dots" id="railDots"></div>
+        <div class="rail-num" id="railNum"></div>
+      </aside>
+
+      <div class="lesson-side">
+        <span class="ls-tag" id="lsTag"></span>
+        <h1 id="lsTitle"></h1>
+        <p class="ls-text" id="lsText"></p>
+
+        <div class="rule-box">
+          <div class="box-kicker">BU DARSDAGI QOIDA</div>
+          <div class="rule-card">
+            <div class="rule-icon" id="ruleIcon"></div>
+            <div>
+              <b id="ruleName"></b>
+              <div class="rule-en" id="ruleEn"></div>
+              <p id="ruleDesc"></p>
+              <button class="show-btn" id="ruleShow">Ko'rsat</button>
+            </div>
+          </div>
+          <p class="box-note">Mashq oynasida kerakli joy sariq halqa bilan yonadi. Avval gapni o'qing, keyin javobni tanlang.</p>
+        </div>
+
+        <div class="task-box">
+          <div class="box-kicker">VAZIFA <button class="where-btn" id="taskWhere">Qayerda? Ko'rsat</button></div>
+          <p id="taskText"></p>
+        </div>
+      </div>
+
+      <div class="workspace">
+        <div class="app-window">
+          <div class="win-bar"><span class="win-dots"><i></i><i></i><i></i></span><span class="win-title" id="winTitle"></span></div>
+          <div class="win-tabs"><span class="active">Mashq</span><span>Qoida</span><span>Lug'at</span></div>
+          <div class="ribbon" id="ribbon"></div>
+          <div class="paper-area"><div class="paper" id="paper"></div></div>
+          <div class="win-status">
+            <button class="status-link" id="statusSpeak">+ Tinglash</button>
+            <span class="status-msg" id="statusMsg"></span>
+            <span class="status-info" id="statusInfo"></span>
+          </div>
+          <div class="lesson-done" id="lessonDone">
+            <div class="done-card">
+              <div class="done-check"><svg class="i"><use href="#i-check"/></svg></div>
+              <h3>Dars tugadi! 🎉</h3>
+              <p id="doneText"></p>
+              <div class="done-actions">
+                <button class="btn ghost" id="doneBack">Kurs yo'li</button>
+                <button class="btn primary" id="doneNext">Keyingi dars →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lesson-bottom">
+        <span class="live-dot" aria-hidden="true"></span>
+        <div class="lb-actions">
+          <button class="btn ghost" id="helpBtn">Yordam</button>
+          <button class="btn primary" id="nextBtn" disabled>Keyingi</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="brand small"><svg class="logo-mark"><use href="#logo-mark"/></svg><span class="wordmark"><b>English</b><small>Learning Center</small></span></span>
+    <span class="muted">Har kuni 10 daqiqa — katta natija</span>
+  </footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="data.js"></script>
+  <script src="courses.js"></script>
+  <script src="app.js"></script>
+  <script src="city.js"></script>
+  <script src="course.js"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 330">
+  <rect width="480" height="330" fill="#f8fafc"/>
+  <g transform="translate(176 20)">
+    <path d="M17 10h86a15 15 0 0 1 15 15v50a15 15 0 0 1-15 15H44L22 108V90h-5A15 15 0 0 1 2 75V25a15 15 0 0 1 15-15z" fill="#253a85"/>
+    <text x="60" y="68" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="800" font-size="46" fill="#fff">En</text>
+    <circle cx="112" cy="12" r="11" fill="#e8a23b"/>
+  </g>
+  <text x="240" y="238" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-weight="800" font-size="84" fill="#253a85">English</text>
+  <text x="240" y="282" text-anchor="middle" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="700" font-size="20" letter-spacing="9" fill="#475569">LEARNING CENTER</text>
+</svg>

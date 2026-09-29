@@ -1,0 +1,99 @@
+import { betterAuth } from "better-auth";
+import { nextCookies } from "better-auth/next-js";
+import { Pool } from "pg";
+
+/**
+ * Autentifikatsiya sozlamalari (better-auth).
+ * Foydalanuvchilar va sessiyalar Neon Postgres bazasida saqlanadi —
+ * parollar better-auth tomonidan xeshlanadi, biz ularni hech qachon ko'rmaymiz.
+ */
+/**
+ * `pg` ulanish satridagi `sslmode` ni o'zi talqin qiladi va kelgusi versiyada
+ * xatti-harakatini o'zgartirishi haqida ogohlantiradi. Shuning uchun SSL ni
+ * satrdan olib tashlab, to'g'ridan-to'g'ri (to'liq tekshiruv bilan) beramiz.
+ */
+function pgPool() {
+  const url = new URL(process.env.DATABASE_URL ?? "");
+  url.searchParams.delete("sslmode");
+  url.searchParams.delete("channel_binding");
+  return new Pool({ connectionString: url.toString(), ssl: { rejectUnauthorized: true } });
+}
+
+/**
+ * Sayt qaysi manzildan ochilayotgan bo'lsa ham ishlashi kerak:
+ * `localhost`, uy tarmog'idagi IP (192.168.x.x) yoki internetdagi domen.
+ *
+ * better-auth soxta so'rovlardan himoyalanish uchun manzilni tekshiradi,
+ * shuning uchun ruxsat etilganlarini shu yerda aniqlaymiz. Internetga
+ * chiqarganingizda domeningizni `TRUSTED_ORIGINS` ga yozib qo'ying
+ * (vergul bilan ajratib).
+ */
+function trustedOrigins(request?: Request): string[] {
+  const allowed = new Set<string>();
+
+  const add = (value?: string | null) => {
+    if (!value) return;
+    try {
+      allowed.add(new URL(value).origin);
+    } catch {
+      // Noto'g'ri yozilgan manzilni e'tiborsiz qoldiramiz.
+    }
+  };
+
+  add(process.env.BETTER_AUTH_URL);
+  for (const extra of (process.env.TRUSTED_ORIGINS ?? "").split(",")) add(extra.trim());
+
+  // Vercel'da joylashtirilganda domen avtomatik beriladi — sozlamani
+  // unutib qo'yilsa ham sayt ishlashi uchun shuni ham qo'shamiz.
+  for (const host of [process.env.VERCEL_PROJECT_PRODUCTION_URL, process.env.VERCEL_URL]) {
+    if (host) add(host.startsWith("http") ? host : `https://${host}`);
+  }
+
+  // So'rov kelgan manzil mahalliy tarmoqdan bo'lsa, unga ham ruxsat beramiz —
+  // shunda bir Wi-Fi'dagi telefon va kompyuterlar saytga kira oladi.
+  const origin = request?.headers.get("origin") ?? request?.headers.get("referer");
+  if (origin) {
+    try {
+      const url = new URL(origin);
+      const host = url.hostname;
+      const isLocal =
+        host === "localhost" ||
+        host === "127.0.0.1" ||
+        host === "[::1]" ||
+        host.endsWith(".local") ||
+        /^10\./.test(host) ||
+        /^192\.168\./.test(host) ||
+        /^172\.(1[6-9]|2\d|3[01])\./.test(host);
+      if (isLocal) allowed.add(url.origin);
+    } catch {
+      // Manzilni o'qib bo'lmasa, ruxsat bermaymiz.
+    }
+  }
+
+  return [...allowed];
+}
+
+export const auth = betterAuth({
+  database: pgPool(),
+  trustedOrigins,
+  emailAndPassword: {
+    enabled: true,
+    minPasswordLength: 8,
+    // Hozircha pochta orqali tasdiqlash yo'q — ro'yxatdan o'tgan zahoti kirish mumkin.
+    requireEmailVerification: false,
+  },
+  user: {
+    additionalFields: {
+      // Saytda ko'rinadigan ism (ro'yxatdan o'tishda so'raladi).
+      displayName: { type: "string", required: false },
+    },
+  },
+  session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 kun
+    updateAge: 60 * 60 * 24, // kuniga bir marta yangilanadi
+  },
+  // Server action'lardan keyin cookie to'g'ri o'rnatilishi uchun.
+  plugins: [nextCookies()],
+});
+
+export type Session = typeof auth.$Infer.Session;

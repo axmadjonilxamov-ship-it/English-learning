@@ -1,26 +1,230 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* Qorong'i rejim `html.dark` klassi orqali boshqariladi (ThemeScript'ga qarang). */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Logotipdagi ranglar */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
+  --color-brand-200: #c7d2fe;
+  --color-brand-300: #a5b4fc;
+  --color-brand-400: #7ea2ff;
+  --color-brand-500: #3d63d8;
+  --color-brand-600: #2f4fb5;
+  --color-brand-700: #253a85;
+  --color-brand-800: #1e2f6b;
+  --color-brand-900: #172450;
+
+  --color-accent-400: #f0b95f;
+  --color-accent-500: #e8a23b;
+  --color-accent-600: #c9862a;
+
+  /* Sahifa ranglari — `.dark` ichida qayta aniqlanadi */
+  --color-surface: #ffffff;
+  --color-surface-2: #f1f2f8;
+  --color-page: #f6f6fb;
+  --color-ink: #11132a;
+  --color-ink-muted: #646b86;
+  --color-line: #e4e6ef;
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+.dark {
+  --color-surface: #15172a;
+  --color-surface-2: #1c1f36;
+  --color-page: #0a0b14;
+  --color-ink: #eef0ff;
+  --color-ink-muted: #9ba1c2;
+  --color-line: #262a44;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  html {
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    background-color: var(--color-page);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Tailwind v4 da chegara rangi avtomatik emas — standart qilib qo'yamiz. */
+  *,
+  ::after,
+  ::before {
+    border-color: var(--color-line);
+  }
+  ::selection {
+    background: var(--color-brand-500);
+    color: #fff;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+  }
+}
+
+@layer utilities {
+  /* Shaharcha va kurs yo'lini gorizontal surish uchun ingichka scrollbar */
+  .scroll-thin {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--color-ink-muted) 40%, transparent) transparent;
+  }
+  .scroll-thin::-webkit-scrollbar {
+    height: 8px;
+  }
+  .scroll-thin::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--color-ink-muted) 40%, transparent);
+    border-radius: 99px;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ---------- Animatsiyalar ---------- */
+@keyframes elc-shake {
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
+}
+@keyframes elc-pop {
+  50% {
+    transform: scale(1.12);
+  }
+}
+@keyframes elc-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes elc-pulse-ring {
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+@keyframes elc-dash {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+@keyframes elc-bob {
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.anim-shake {
+  animation: elc-shake 0.4s;
+}
+.anim-pop {
+  animation: elc-pop 0.35s;
+}
+.anim-enter {
+  animation: elc-enter 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.anim-dash {
+  animation: elc-dash 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Yordam tugmasi bosilganda kerakli joyni sariq halqa bilan yoqadi. */
+@keyframes elc-spot {
+  to {
+    outline-color: rgba(245, 158, 11, 0.35);
+    outline-offset: 8px;
+  }
+}
+.spot {
+  outline: 3px solid #f59e0b;
+  outline-offset: 4px;
+  border-radius: 12px;
+  animation: elc-spot 0.7s ease-in-out 4 alternate;
+}
+
+/* Sertifikatni chop etish: faqat sertifikat qog'ozga tushadi. */
+@media print {
+  header,
+  footer,
+  .print\:hidden {
+    display: none !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+  .certificate {
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    page-break-inside: avoid;
+  }
+  @page {
+    size: A4 landscape;
+    margin: 12mm;
+  }
+}
+
+/* Shaharchadagi marshrut chizig'i — oq yo'l chizilib boradi. */
+@keyframes elc-draw {
+  from {
+    stroke-dashoffset: 1200;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.route-line {
+  stroke-dasharray: 1200;
+  animation: elc-draw 0.7s ease-out forwards;
+}
+@keyframes elc-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.6);
+  }
+  60% {
+    transform: translateY(2px) scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.route-pin {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: elc-drop 0.45s 0.45s ease-out backwards;
 }
