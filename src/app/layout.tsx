@@ -7,6 +7,7 @@ import { ProgressProvider } from "@/lib/progress";
 import { EnforcementProvider } from "@/components/EnforcementProvider";
 import { AuthGate } from "@/components/AuthGate";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import { UpdatePrompt } from "@/components/UpdatePrompt";
 import { LangProvider } from "@/lib/i18n";
 import { langScript, themeScript } from "@/lib/boot-script";
 
@@ -66,6 +67,7 @@ export default function RootLayout({
             <Footer />
             <AuthGate />
             <InstallPrompt />
+            <UpdatePrompt />
           </EnforcementProvider>
           </ProgressProvider>
         </LangProvider>

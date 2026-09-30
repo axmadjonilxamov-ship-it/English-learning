@@ -398,6 +398,15 @@ export const UI = {
   "admin.ranRed": { uz: "qizil chiroqdan o'tdi", ru: "проехал на красный", en: "ran a red light" },
   "admin.test": { uz: "test", ru: "тест", en: "test" },
 
+
+  // ---------- Yangilanish ----------
+  "update.title": { uz: "Yangi versiya chiqdi", ru: "Доступна новая версия", en: "A new version is available" },
+  "update.desc": {
+    uz: "Ilovani yangilang — o'zgarishlar shundan keyin ko'rinadi.",
+    ru: "Обновите приложение — изменения появятся после этого.",
+    en: "Update the app — the changes appear after that.",
+  },
+  "update.button": { uz: "Yangilash", ru: "Обновить", en: "Update" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export type UIKey = keyof typeof UI;
