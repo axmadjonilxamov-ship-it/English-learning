@@ -219,6 +219,15 @@ async function score(
     if (cause instanceof Anthropic.RateLimitError) {
       throw new SpeakingError("Xizmat hozir band. Bir daqiqadan keyin qayta urining.", 429, cause);
     }
+    // Anthropic mablag' tugaganini 400 bilan qaytaradi — buni alohida ajratamiz,
+    // aks holda foydalanuvchi "qayta urining" deb bekorga urinaveradi.
+    if (cause instanceof Anthropic.APIError && /credit balance/i.test(cause.message)) {
+      throw new SpeakingError(
+        "Baholash xizmatida mablag' tugagan. Administrator Anthropic hisobiga to'lov qo'shishi kerak.",
+        503,
+        cause,
+      );
+    }
     if (cause instanceof Anthropic.APIError) {
       console.error("Claude xatosi:", cause.status, cause.message);
       throw new SpeakingError("Javobni baholab bo'lmadi. Qayta urinib ko'ring.", 502, cause);

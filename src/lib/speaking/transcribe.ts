@@ -65,6 +65,14 @@ export const whisperTranscriber: Transcriber = async (audio) => {
     if (res.status === 401) {
       throw new SpeakingError("Nutqni tanish xizmati kaliti noto'g'ri.", 503);
     }
+    // Mablag' tugashi ham 429 bilan keladi, lekin kutib turishning foydasi yo'q —
+    // hisobga to'lov qo'shilmaguncha har safar shu javob qaytaveradi.
+    if (res.status === 429 && /insufficient_quota|credit/i.test(detail)) {
+      throw new SpeakingError(
+        "Nutqni tanish xizmatida mablag' tugagan. Administrator OpenAI hisobiga to'lov qo'shishi kerak.",
+        503,
+      );
+    }
     if (res.status === 429) {
       throw new SpeakingError("Xizmat hozir band. Bir daqiqadan keyin qayta urining.", 429);
     }
