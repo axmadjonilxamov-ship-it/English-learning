@@ -414,3 +414,31 @@
     opacity: var(--city-beam);
   }
 }
+
+/* Seriya uzilganda alanga yig'laydi — yoshlar pastga tomchilaydi. */
+@keyframes elc-tear {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(6px);
+    opacity: 0;
+  }
+}
+
+.elc-tear {
+  animation: elc-tear 1.6s ease-in infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .elc-tear {
+    animation: none;
+  }
+}

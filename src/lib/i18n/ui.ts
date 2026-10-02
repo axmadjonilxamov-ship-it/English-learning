@@ -407,6 +407,37 @@ export const UI = {
     en: "Update the app — the changes appear after that.",
   },
   "update.button": { uz: "Yangilash", ru: "Обновить", en: "Update" },
+
+  // ---------- Kunlik seriya ----------
+  "streak.title": { uz: "Kunlik seriya", ru: "Серия дней", en: "Daily streak" },
+  "streak.days": { uz: "kun", ru: "дней", en: "days" },
+  "streak.missed": { uz: "kun o'tkazib yubordingiz.", ru: "дней пропущено.", en: "days missed." },
+  "streak.best": { uz: "Eng yaxshi natija", ru: "Лучший результат", en: "Best streak" },
+  "streak.continue": { uz: "Darsni davom ettirish", ru: "Продолжить урок", en: "Continue a lesson" },
+  "streak.doneTitle": { uz: "Bugun bajarildi!", ru: "Сегодня выполнено!", en: "Done for today!" },
+  "streak.doneHint": {
+    uz: "Ertaga ham kelsangiz, seriya o'sib boradi.",
+    ru: "Приходите и завтра — серия будет расти.",
+    en: "Come back tomorrow and the streak keeps growing.",
+  },
+  "streak.riskTitle": { uz: "Seriya xavf ostida", ru: "Серия под угрозой", en: "Your streak is at risk" },
+  "streak.riskHint": {
+    uz: "Bugun bitta dars tugatsangiz, seriya saqlanadi.",
+    ru: "Завершите один урок сегодня, и серия сохранится.",
+    en: "Finish one lesson today to keep it alive.",
+  },
+  "streak.brokenTitle": { uz: "Seriya uzildi", ru: "Серия прервалась", en: "Your streak broke" },
+  "streak.brokenHint": {
+    uz: "Qaytib keldingiz — bitta dars bilan yangi seriya boshlanadi.",
+    ru: "Вы вернулись — один урок начнёт новую серию.",
+    en: "You're back — one lesson starts a new streak.",
+  },
+  "streak.noneTitle": { uz: "Seriya hali boshlanmagan", ru: "Серия ещё не начата", en: "No streak yet" },
+  "streak.noneHint": {
+    uz: "Bitta dars tugatsangiz, birinchi kun sanaladi.",
+    ru: "Завершите один урок — и первый день засчитается.",
+    en: "Finish one lesson and day one counts.",
+  },
 } satisfies Record<string, Record<Lang, string>>;
 
 export type UIKey = keyof typeof UI;

@@ -1,3 +1,5 @@
+import type { Streak } from "@/lib/streak";
+
 /** Bo'sh joyni to'g'ri so'z bilan to'ldirish. `q` ichida `___` bo'lishi shart. */
 export type TaskChoose = {
   t: "choose";
@@ -108,4 +110,6 @@ export type GrammarTopic = {
 export type ProgressState = {
   /** Tugatilgan darslar id'lari. */
   lessons: string[];
+  /** Kunlik seriya. */
+  streak: Streak;
 };

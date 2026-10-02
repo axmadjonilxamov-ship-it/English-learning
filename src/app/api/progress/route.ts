@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import { sql } from "@/lib/db";
+import { mergeStreak, normaliseStreak } from "@/lib/streak";
 import type { ProgressState } from "@/types";
 
 async function currentUserId(): Promise<string | null> {
@@ -10,11 +11,26 @@ async function currentUserId(): Promise<string | null> {
 }
 
 async function loadState(userId: string): Promise<ProgressState> {
-  const rows = await sql`select lesson_id from lesson_progress where user_id = ${userId}`;
-  return { lessons: rows.map((r) => r.lesson_id as string) };
+  const [lessons, stat] = await Promise.all([
+    sql`select lesson_id from lesson_progress where user_id = ${userId}`,
+    // `::text` muhim: aks holda drayver `date` ni `Date` obyektiga aylantiradi
+    // va vaqt mintaqasi tufayli sana bir kunga surilib ketishi mumkin.
+    sql`select streak_count, streak_last::text as streak_last, streak_best
+        from user_stat where user_id = ${userId}`,
+  ]);
+
+  const row = stat[0];
+  return {
+    lessons: lessons.map((r) => r.lesson_id as string),
+    streak: normaliseStreak({
+      count: Number(row?.streak_count ?? 0),
+      last: (row?.streak_last as string | null) ?? null,
+      best: Number(row?.streak_best ?? 0),
+    }),
+  };
 }
 
-/** Kirgan foydalanuvchining tugatgan darslari. Kirmagan bo'lsa — null. */
+/** Kirgan foydalanuvchining tugatgan darslari va seriyasi. Kirmagan bo'lsa — null. */
 export async function GET() {
   const userId = await currentUserId();
   if (!userId) return NextResponse.json(null);
@@ -22,8 +38,9 @@ export async function GET() {
 }
 
 /**
- * Klientdagi darslarni serverdagilarga qo'shadi (hech narsa o'chirilmaydi)
- * va to'liq ro'yxatni qaytaradi.
+ * Klientdagi darslarni serverdagilarga qo'shadi (hech narsa o'chirilmaydi),
+ * seriyani esa ikkalasining kattasiga tenglashtiradi, va to'liq holatni
+ * qaytaradi.
  */
 export async function POST(request: Request) {
   const userId = await currentUserId();
@@ -45,5 +62,20 @@ export async function POST(request: Request) {
       on conflict (user_id, lesson_id) do nothing`;
   }
 
-  return NextResponse.json(await loadState(userId));
+  // Seriyani birlashtiramiz: ikkita qurilmadan kelgan ma'lumot bir-birini
+  // orqaga surib yubormasligi kerak.
+  const stored = await loadState(userId);
+  const merged = mergeStreak(stored.streak, normaliseStreak(body.streak));
+  if (merged.last) {
+    await sql`
+      insert into user_stat (user_id, streak_count, streak_last, streak_best, updated_at)
+      values (${userId}, ${merged.count}, ${merged.last}::date, ${merged.best}, now())
+      on conflict (user_id) do update set
+        streak_count = excluded.streak_count,
+        streak_last = excluded.streak_last,
+        streak_best = excluded.streak_best,
+        updated_at = now()`;
+  }
+
+  return NextResponse.json({ ...stored, lessons: [...new Set([...stored.lessons, ...lessons])], streak: merged });
 }

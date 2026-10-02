@@ -3,17 +3,29 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useSession } from "@/lib/auth-client";
 import { LEVELS, TOTAL_LESSONS } from "@/data";
+import {
+  EMPTY_STREAK,
+  advance,
+  mergeStreak,
+  normaliseStreak,
+  statusOf,
+  visibleCount,
+  type Streak,
+  type StreakStatus,
+} from "@/lib/streak";
 import type { Level, ProgressState } from "@/types";
 
 const STORAGE_KEY = "englishup:progress";
 
-const EMPTY: ProgressState = { lessons: [] };
+const EMPTY: ProgressState = { lessons: [], streak: EMPTY_STREAK };
 
 function readLocal(): ProgressState {
   if (typeof window === "undefined") return EMPTY;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? { ...EMPTY, ...JSON.parse(raw) } : EMPTY;
+    if (!raw) return EMPTY;
+    const saved = { ...EMPTY, ...JSON.parse(raw) } as ProgressState;
+    return { ...saved, streak: normaliseStreak(saved.streak) };
   } catch {
     return EMPTY;
   }
@@ -29,7 +41,10 @@ function writeLocal(state: ProgressState) {
 
 /** Ikkita holatni yo'qotishsiz birlashtiradi. */
 function merge(a: ProgressState, b: ProgressState): ProgressState {
-  return { lessons: [...new Set([...a.lessons, ...b.lessons])] };
+  return {
+    lessons: [...new Set([...a.lessons, ...b.lessons])],
+    streak: mergeStreak(normaliseStreak(a.streak), normaliseStreak(b.streak)),
+  };
 }
 
 export type LevelProgress = { done: number; total: number; percent: number };
@@ -42,6 +57,8 @@ type ProgressApi = {
   synced: boolean;
   isLessonDone: (lessonId: string) => boolean;
   completeLesson: (lessonId: string) => void;
+  /** Kunlik seriya: ko'rsatiladigan son, eng yaxshi natija va holat. */
+  streak: { count: number; best: number; status: StreakStatus; raw: Streak };
   levelProgress: (level: Level) => LevelProgress;
   /** Darajadagi birinchi tugatilmagan dars indeksi. */
   currentLesson: (level: Level) => number;
@@ -110,7 +127,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
         const server: ProgressState | null = res.ok ? await res.json() : null;
         if (cancelled) return;
         const local = readLocal();
-        const merged = server ? merge(local, server) : local;
+        const merged = server ? merge(local, { ...EMPTY, ...server }) : local;
         writeLocal(merged);
         setState(merged);
         // Brauzerda serverda yo'q narsa bo'lsa, uni ham saqlab qo'yamiz.
@@ -144,7 +161,23 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
       synced: !!userId,
       isLessonDone: (id) => doneLessons.has(id),
       completeLesson: (id) =>
-        update((prev) => (prev.lessons.includes(id) ? prev : { lessons: [...prev.lessons, id] })),
+        // Dars tugadi — seriya ham shu yerda oshadi (kuniga bir marta).
+        update((prev) => {
+          const current = normaliseStreak(prev.streak);
+          const streak = advance(current);
+          const known = prev.lessons.includes(id);
+          // Tugatilgan darsga qayta kirilsa va seriya ham o'zgarmasa, holatni
+          // qayta yozmaymiz — aks holda har tashrifda serverga so'rov ketardi.
+          const sameStreak = streak.last === current.last && streak.count === current.count;
+          if (known && sameStreak) return prev;
+          return { lessons: known ? prev.lessons : [...prev.lessons, id], streak };
+        }),
+      streak: {
+        count: visibleCount(state.streak),
+        best: state.streak.best,
+        status: statusOf(state.streak),
+        raw: state.streak,
+      },
       levelProgress: (level) => {
         const done = level.lessons.filter((l) => doneLessons.has(l.id)).length;
         return { done, total: level.lessons.length, percent: Math.round((done / level.lessons.length) * 100) };

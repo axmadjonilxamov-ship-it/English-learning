@@ -7,6 +7,7 @@ import { Icon, type IconName } from "./Icon";
 import { ThemeToggle } from "./ThemeToggle";
 import { useSession, signOut } from "@/lib/auth-client";
 import { LangSwitcher } from "./LangSwitcher";
+import { StreakBadge } from "./StreakBadge";
 import { useT, type UIKey } from "@/lib/i18n";
 
 const NAV: { href: string; label: UIKey; icon: IconName }[] = [
@@ -120,6 +121,7 @@ export function Header() {
           </>
         )}
 
+        <StreakBadge />
         <LangSwitcher />
         <ThemeToggle />
       </div>
