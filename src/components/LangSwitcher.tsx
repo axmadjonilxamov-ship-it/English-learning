@@ -19,7 +19,7 @@ export function LangSwitcher() {
           onClick={() => setLang(code)}
           aria-pressed={lang === code}
           title={LANG_NAMES[code]}
-          className={`px-2.5 py-2 text-xs font-extrabold transition ${
+          className={`px-2.5 py-2 text-xs font-extrabold transition max-sm:px-2 ${
             lang === code ? "bg-brand-600 text-white" : "text-ink-muted hover:bg-surface-2 hover:text-ink"
           }`}
         >

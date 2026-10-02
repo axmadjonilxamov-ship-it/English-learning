@@ -438,6 +438,60 @@ export const UI = {
     ru: "Завершите один урок — и первый день засчитается.",
     en: "Finish one lesson and day one counts.",
   },
+
+  // ---------- Parolni tiklash ----------
+  "forgot.link": { uz: "Parolni unutdingizmi?", ru: "Забыли пароль?", en: "Forgot your password?" },
+  "forgot.title": { uz: "Parolni tiklash", ru: "Восстановление пароля", en: "Reset your password" },
+  "forgot.lead": {
+    uz: "Pochta manzilingizni yozing — yangi parol o'rnatish uchun havola yuboramiz.",
+    ru: "Укажите адрес почты — пришлём ссылку для установки нового пароля.",
+    en: "Enter your email and we'll send you a link to set a new password.",
+  },
+  "forgot.send": { uz: "Havola yuborish", ru: "Отправить ссылку", en: "Send the link" },
+  "forgot.sentTitle": { uz: "Xat yuborildi", ru: "Письмо отправлено", en: "Email sent" },
+  "forgot.sentLead": {
+    uz: "Agar bu manzil tizimda bo'lsa, tiklash havolasi yuborildi. Pochtangizni tekshiring — spam papkasiga ham qarang. Havola 1 soat amal qiladi.",
+    ru: "Если этот адрес есть в системе, ссылка отправлена. Проверьте почту, в том числе папку «Спам». Ссылка действует 1 час.",
+    en: "If that address is in our system, the link is on its way. Check your inbox and the spam folder. The link works for one hour.",
+  },
+  "forgot.backToLogin": { uz: "Kirish sahifasiga qaytish", ru: "Вернуться к входу", en: "Back to sign in" },
+  "forgot.errSend": {
+    uz: "Xat yuborib bo'lmadi. Bir oz kutib, qaytadan urinib ko'ring.",
+    ru: "Не удалось отправить письмо. Подождите немного и попробуйте снова.",
+    en: "Could not send the email. Wait a moment and try again.",
+  },
+  "reset.title": { uz: "Yangi parol", ru: "Новый пароль", en: "New password" },
+  "reset.lead": {
+    uz: "Yangi parolni kiriting — kamida 8 belgi.",
+    ru: "Введите новый пароль — минимум 8 символов.",
+    en: "Enter a new password — at least 8 characters.",
+  },
+  "reset.newPassword": { uz: "Yangi parol", ru: "Новый пароль", en: "New password" },
+  "reset.repeat": { uz: "Parolni takrorlang", ru: "Повторите пароль", en: "Repeat the password" },
+  "reset.save": { uz: "Parolni saqlash", ru: "Сохранить пароль", en: "Save the password" },
+  "reset.doneTitle": { uz: "Parol o'zgartirildi", ru: "Пароль изменён", en: "Password changed" },
+  "reset.doneLead": {
+    uz: "Endi yangi parol bilan kirishingiz mumkin.",
+    ru: "Теперь можно войти с новым паролем.",
+    en: "You can now sign in with the new password.",
+  },
+  "reset.errMismatch": { uz: "Parollar mos kelmadi", ru: "Пароли не совпадают", en: "The passwords don't match" },
+  "reset.errToken": {
+    uz: "Havola eskirgan yoki noto'g'ri",
+    ru: "Ссылка устарела или неверна",
+    en: "The link has expired or is invalid",
+  },
+  "reset.tokenLead": {
+    uz: "Tiklash havolasi 1 soat amal qiladi va bir marta ishlatiladi. Yangisini so'rang.",
+    ru: "Ссылка действует 1 час и используется один раз. Запросите новую.",
+    en: "A reset link works for one hour and can be used once. Request a new one.",
+  },
+  "reset.errGeneric": {
+    uz: "Parolni o'zgartirib bo'lmadi. Qaytadan urinib ko'ring.",
+    ru: "Не удалось изменить пароль. Попробуйте снова.",
+    en: "Could not change the password. Please try again.",
+  },
+  "reset.requestAgain": { uz: "Yangi havola so'rash", ru: "Запросить новую ссылку", en: "Request a new link" },
 } satisfies Record<string, Record<Lang, string>>;
 
 export type UIKey = keyof typeof UI;

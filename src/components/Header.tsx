@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Logo } from "./Logo";
+import { Logo, LogoMark } from "./Logo";
 import { Icon, type IconName } from "./Icon";
 import { ThemeToggle } from "./ThemeToggle";
 import { useSession, signOut } from "@/lib/auth-client";
@@ -15,6 +15,43 @@ const NAV: { href: string; label: UIKey; icon: IconName }[] = [
   { href: "/translate", label: "nav.translate", icon: "translate" },
   { href: "/ielts", label: "nav.ielts", icon: "award" },
 ];
+
+/**
+ * Menyu havolalari. Bir xil ro'yxat ikki joyda ishlatiladi: keng ekranda
+ * sarlavha ichida, telefonda esa ekran pastidagi panelda.
+ */
+function NavLinks({
+  variant,
+  isActive,
+}: {
+  variant: "bar" | "bottom";
+  isActive: (href: string) => boolean;
+}) {
+  const t = useT();
+  const shape =
+    variant === "bottom"
+      ? "flex-1 flex-col gap-0.5 px-1 py-2 text-[0.68rem]"
+      : "gap-2 px-3.5 py-2 text-[0.95rem] max-lg:gap-1.5 max-lg:px-2 max-lg:text-[0.875rem]";
+
+  return NAV.map(({ href, label, icon }) => {
+    const active = isActive(href);
+    return (
+      <Link
+        key={href}
+        href={href}
+        aria-current={active ? "page" : undefined}
+        className={`flex items-center rounded-xl font-semibold transition ${shape} ${
+          active
+            ? "bg-brand-500/10 text-brand-600 dark:text-brand-400"
+            : "text-ink-muted hover:bg-surface-2 hover:text-ink"
+        }`}
+      >
+        <Icon name={icon} className={variant === "bottom" ? "size-[22px]" : "size-[18px]"} />
+        <span>{t(label)}</span>
+      </Link>
+    );
+  });
+}
 
 export function Header() {
   const pathname = usePathname();
@@ -29,33 +66,17 @@ export function Header() {
       : pathname.startsWith(href);
 
   return (
-    <header className="sticky top-3 z-50 mx-auto mt-3 flex w-[calc(100%-2rem)] max-w-[1280px] items-center gap-4 rounded-2xl border border-line bg-surface/80 px-4 py-2.5 backdrop-blur-xl max-md:top-2 max-md:w-[calc(100%-1rem)] max-md:bg-surface">
+    <>
+      <header className="sticky top-3 z-50 mx-auto mt-3 flex w-[calc(100%-2rem)] max-w-[1280px] items-center gap-4 rounded-2xl border border-line bg-surface/80 px-4 py-2.5 backdrop-blur-xl max-md:top-2 max-md:w-[calc(100%-1rem)] max-md:bg-surface">
       <Link href="/" aria-label="Bosh sahifa">
-        <Logo />
+        {/* Keng ekranda to'liq logotip; tor ekranda esa faqat belgi, aks holda
+            menyu va o'ng tomondagi tugmalar sarlavhaga sig'may qoladi. */}
+        <Logo className="max-lg:hidden" />
+        <LogoMark size={38} className="lg:hidden" />
       </Link>
 
-      <nav
-        aria-label={t("nav.menu")}
-        className="mx-auto flex gap-1 max-md:fixed max-md:inset-x-2 max-md:bottom-2 max-md:mx-0 max-md:justify-around max-md:rounded-[1.25rem] max-md:border max-md:border-line max-md:bg-surface/95 max-md:p-1.5 max-md:shadow-lg max-md:backdrop-blur-xl"
-      >
-        {NAV.map(({ href, label, icon }) => {
-          const active = isActive(href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-[0.95rem] font-semibold transition max-md:flex-1 max-md:flex-col max-md:gap-0.5 max-md:px-1 max-md:text-[0.68rem] ${
-                active
-                  ? "bg-brand-500/10 text-brand-600 dark:text-brand-400"
-                  : "text-ink-muted hover:bg-surface-2 hover:text-ink"
-              }`}
-            >
-              <Icon name={icon} className="size-[18px] max-md:size-[22px]" />
-              <span>{t(label)}</span>
-            </Link>
-          );
-        })}
+      <nav aria-label={t("nav.menu")} className="mx-auto flex gap-1 max-md:hidden">
+        <NavLinks variant="bar" isActive={isActive} />
       </nav>
 
       <div className="flex items-center gap-2">
@@ -114,7 +135,7 @@ export function Header() {
             </Link>
             <Link
               href="/register"
-              className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-500 max-sm:hidden"
+              className="rounded-xl bg-brand-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-brand-500 max-lg:hidden"
             >
               {t("nav.register")}
             </Link>
@@ -125,6 +146,20 @@ export function Header() {
         <LangSwitcher />
         <ThemeToggle />
       </div>
-    </header>
+      </header>
+
+      {/* Telefonda menyu ekran pastida turadi.
+          MUHIM: bu panel sarlavha ichida bo'lmasligi kerak. Sarlavhada
+          `backdrop-blur` bor, `backdrop-filter` esa ichidagi `fixed`
+          elementlar uchun tayanch (containing block) yasaydi — natijada
+          panel ekran tagiga emas, sarlavhaning o'ziga nisbatan joylashib,
+          uning ustiga chiqib qolardi. */}
+      <nav
+        aria-label={t("nav.menu")}
+        className="fixed inset-x-2 bottom-2 z-50 hidden justify-around rounded-[1.25rem] border border-line bg-surface/95 p-1.5 shadow-lg backdrop-blur-xl max-md:flex"
+      >
+        <NavLinks variant="bottom" isActive={isActive} />
+      </nav>
+    </>
   );
 }

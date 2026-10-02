@@ -55,6 +55,8 @@ Qiymatlarni kompyuteringizdagi `.env.local` faylidan ko'chiring:
 | `ADMIN_PASSWORD` | Admin panel paroli |
 | `BETTER_AUTH_URL` | Sayt manzili, masalan `https://english-learning-center.vercel.app` |
 | `TRUSTED_ORIGINS` | Xuddi shu manzil |
+| `GMAIL_USER` | Parolni tiklash xatlari yuboriladigan gmail manzili |
+| `GMAIL_APP_PASSWORD` | Google "ilova paroli" (oddiy parol emas) |
 
 `.env.local` ni ko'rish uchun:
 

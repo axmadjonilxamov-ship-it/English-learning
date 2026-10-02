@@ -118,6 +118,14 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
             </p>
           )}
 
+          {!isRegister && (
+            <p className="-mt-1 text-right text-sm">
+              <Link href="/forgot-password" className="font-semibold text-ink-muted hover:text-ink">
+                {t("forgot.link")}
+              </Link>
+            </p>
+          )}
+
           <button
             type="submit"
             disabled={busy}
@@ -147,10 +155,10 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
   );
 }
 
-const inputClass =
+export const inputClass =
   "w-full rounded-xl border border-line bg-surface-2 px-4 py-3 outline-none transition focus:border-brand-500 focus:ring-4 focus:ring-brand-500/15";
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="grid gap-1.5">
       <span className="text-sm font-bold">{label}</span>

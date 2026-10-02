@@ -1,6 +1,8 @@
 import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { Pool } from "pg";
+import { resetPasswordMail, sendMail } from "./mail";
+import { rateLimit } from "./rate-limit";
 
 /**
  * Autentifikatsiya sozlamalari (better-auth).
@@ -87,6 +89,32 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     // Hozircha pochta orqali tasdiqlash yo'q — ro'yxatdan o'tgan zahoti kirish mumkin.
     requireEmailVerification: false,
+    // Tiklash havolasi 1 soat amal qiladi.
+    resetPasswordTokenExpiresIn: 60 * 60,
+    /**
+     * Parolni tiklash xatini yuboradi.
+     *
+     * Bir manzilga soatda 3 tadan ortiq xat yuborilmaydi: aks holda birov
+     * boshqa odamning pochtasini xat bilan to'ldirib yuborishi va Gmail'ning
+     * kunlik chegarasi tugab qolishi mumkin. Chegaradan o'tilsa xat jimgina
+     * yuborilmaydi — better-auth baribir bir xil javob qaytaradi, shuning
+     * uchun tashqaridan manzil bor-yo'qligini bilib bo'lmaydi.
+     */
+    sendResetPassword: async ({ user, url }) => {
+      const key = `reset:${user.email.toLowerCase()}`;
+      const limit = await rateLimit(key, {
+        max: 3,
+        windowSeconds: 60 * 60,
+        lockoutSeconds: 60 * 60,
+      }).catch(() => ({ allowed: true, waitMs: 0 }));
+
+      if (!limit.allowed) {
+        console.warn("Parolni tiklash: juda ko'p so'rov yuborilgan, xat yuborilmadi.");
+        return;
+      }
+
+      await sendMail(resetPasswordMail(user.email, url, user.name));
+    },
   },
   user: {
     additionalFields: {

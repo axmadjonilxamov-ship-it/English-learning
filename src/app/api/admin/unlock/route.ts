@@ -7,57 +7,13 @@ import {
   currentAdminCandidate,
   makeUnlockToken,
 } from "@/lib/admin";
-import { sql } from "@/lib/db";
+import { clearAttempts, rateLimit } from "@/lib/rate-limit";
 
 /**
  * Parolni taxmin qilishga qarshi cheklov: bitta IP dan 1 daqiqada 5 tadan
  * ortiq urinish bo'lsa, 5 daqiqaga to'xtatiladi.
- *
- * Hisob bazada saqlanadi, xotirada emas — Vercel kabi muhitlarda har bir
- * so'rov boshqa nusxada bajarilishi mumkin, xotiradagi hisob esa ular
- * o'rtasida bo'linmaydi va cheklovni chetlab o'tish mumkin bo'lib qoladi.
  */
-const MAX_TRIES = 5;
-const WINDOW_SECONDS = 60;
-const LOCKOUT_SECONDS = 5 * 60;
-
-async function rateLimit(key: string): Promise<{ allowed: boolean; waitMs: number }> {
-  const rows = await sql`
-    insert into login_attempt (key, count, window_end)
-    values (${key}, 1, now() + make_interval(secs => ${WINDOW_SECONDS}))
-    on conflict (key) do update set
-      -- Blok davom etayotgan bo'lsa, hisobni o'zgartirmaymiz.
-      count = case
-        when login_attempt.locked_until > now() then login_attempt.count
-        when login_attempt.window_end <= now() then 1
-        else login_attempt.count + 1
-      end,
-      window_end = case
-        when login_attempt.window_end <= now() and login_attempt.locked_until <= now()
-          then now() + make_interval(secs => ${WINDOW_SECONDS})
-        when login_attempt.locked_until > now() then login_attempt.window_end
-        else login_attempt.window_end
-      end,
-      locked_until = case
-        when login_attempt.locked_until > now() then login_attempt.locked_until
-        when login_attempt.window_end > now() and login_attempt.count + 1 > ${MAX_TRIES}
-          then now() + make_interval(secs => ${LOCKOUT_SECONDS})
-        else login_attempt.locked_until
-      end,
-      updated_at = now()
-    returning
-      count,
-      greatest(0, extract(epoch from (locked_until - now())))::int as wait_seconds`;
-
-  const row = rows[0];
-  const wait = Number(row?.wait_seconds ?? 0);
-  return { allowed: wait <= 0, waitMs: wait * 1000 };
-}
-
-/** Muvaffaqiyatli kirishdan keyin hisobni tozalaymiz. */
-async function clearAttempts(key: string) {
-  await sql`delete from login_attempt where key = ${key}`;
-}
+const LIMIT = { max: 5, windowSeconds: 60, lockoutSeconds: 5 * 60 };
 
 /** Parolni tekshiradi va muvaffaqiyatli bo'lsa imzolangan cookie qo'yadi. */
 export async function POST(request: Request) {
@@ -68,7 +24,7 @@ export async function POST(request: Request) {
   const head = await headers();
   const ip = head.get("x-forwarded-for")?.split(",")[0]?.trim() || "local";
   // Hisob IP va foydalanuvchi bo'yicha yuritiladi.
-  const limit = await rateLimit(`admin:${ip}:${userId}`);
+  const limit = await rateLimit(`admin:${ip}:${userId}`, LIMIT);
   if (!limit.allowed) {
     return NextResponse.json(
       { error: `Juda ko'p urinish. ${Math.ceil(limit.waitMs / 60_000)} daqiqadan keyin qayta urining.` },
